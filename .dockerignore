@@ -1,0 +1,80 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+README_RUNPOD.md
+README_GPU_API.md
+DEPLOYMENT.md
+RUNPOD_CHANGES.md
+*.md
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git
+.mypy_cache
+.pytest_cache
+.hypothesis
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Test outputs
+test_outputs/
+*.wav
+*.mp3
+*.flac
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# GUI apps (excluded for API-only)
+gradio_*.py
+multilingual_app.py
+example_*.py
+
+# Temporary files
+tmp/
+temp/
+*.tmp
