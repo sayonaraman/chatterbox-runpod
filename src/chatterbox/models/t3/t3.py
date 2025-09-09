@@ -315,6 +315,7 @@ class T3(nn.Module):
         # Instantiate the logits processors.
         top_p_warper = TopPLogitsWarper(top_p=top_p)
         min_p_warper = MinPLogitsWarper(min_p=min_p)
+        top_p_warper = TopPLogitsWarper(top_p=top_p)
         repetition_penalty_processor = RepetitionPenaltyLogitsProcessor(penalty=float(repetition_penalty))
 
         # ---- Initial Forward Pass (no kv_cache yet) ----
