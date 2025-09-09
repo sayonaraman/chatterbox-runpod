@@ -1,45 +1,40 @@
 # RunPod GPU Serverless Dockerfile for Chatterbox TTS API
-# Using official PyTorch image compatible with transformers 4.46.3
-FROM pytorch/pytorch:2.1.2-cuda12.1-cudnn8-runtime
+# Using EXACT environment as original project: Python 3.11 + Debian 11
+FROM python:3.11-slim-bullseye
 
 # Set working directory
 WORKDIR /app
 
-# Install minimal system dependencies for GPU TTS
+# Install system dependencies (same as original project environment)
 RUN apt-get update && apt-get install -y \
     git \
+    wget \
+    curl \
     ffmpeg \
     libsndfile1 \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for better Docker layer caching
-COPY requirements.txt .
-
-# Install Python dependencies with GPU optimizations
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
-
-# Copy only necessary files for API (exclude GUI apps)
+# Copy project files (same structure as original)
 COPY src/ ./src/
 COPY pyproject.toml .
 COPY handler.py .
 COPY LICENSE .
 
-# Install Chatterbox in production mode
-RUN pip install --no-deps -e .
+# Install EXACTLY as original project recommends
+RUN pip install --no-cache-dir --upgrade pip
+RUN pip install -e .
 
-# Pre-download models to GPU cache for faster cold starts
-# Download to CPU first, then they'll be moved to GPU on first use
-RUN python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}, Devices: {torch.cuda.device_count()}')"
+# Install RunPod SDK
+RUN pip install runpod>=1.5.0
+
+# Pre-download models for faster cold starts
 RUN python -c "from chatterbox.tts import ChatterboxTTS; ChatterboxTTS.from_pretrained(device='cpu')" || echo "English model download failed"
 RUN python -c "from chatterbox.mtl_tts import ChatterboxMultilingualTTS; ChatterboxMultilingualTTS.from_pretrained(device='cpu')" || echo "Multilingual model download failed"
 
-# Set environment variables for GPU optimization
+# Set environment variables
 ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
-ENV CUDA_VISIBLE_DEVICES=0
-ENV TORCH_CUDA_ARCH_LIST="7.5;8.0;8.6;8.9;9.0"
 
 # RunPod serverless handler
 CMD ["python", "handler.py"]
