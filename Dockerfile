@@ -15,15 +15,31 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy project files (same structure as original)
+# Install PyTorch first (CPU version for building, will work on GPU)
+RUN pip install --no-cache-dir --upgrade pip
+RUN pip install torch==2.6.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cpu
+
+# Install other dependencies manually to avoid conflicts
+RUN pip install --no-cache-dir \
+    "numpy>=1.24.0,<1.26.0" \
+    librosa==0.11.0 \
+    transformers==4.46.3 \
+    diffusers==0.29.0 \
+    conformer==0.3.2 \
+    safetensors==0.5.3 \
+    "pkuseg==0.0.25" \
+    pykakasi==2.3.0 \
+    resemble-perth==1.0.1 \
+    s3tokenizer
+
+# Copy project files
 COPY src/ ./src/
 COPY pyproject.toml .
 COPY handler.py .
 COPY LICENSE .
 
-# Install EXACTLY as original project recommends
-RUN pip install --no-cache-dir --upgrade pip
-RUN pip install -e .
+# Install project without dependencies (since we installed them manually)
+RUN pip install --no-deps -e .
 
 # Install RunPod SDK
 RUN pip install runpod>=1.5.0
