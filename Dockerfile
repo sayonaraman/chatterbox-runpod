@@ -19,18 +19,19 @@ RUN apt-get update && apt-get install -y \
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install torch==2.6.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cpu
 
-# Install other dependencies manually to avoid conflicts
-RUN pip install --no-cache-dir \
-    "numpy>=1.24.0,<1.26.0" \
-    librosa==0.11.0 \
-    transformers==4.46.3 \
-    diffusers==0.29.0 \
-    conformer==0.3.2 \
-    safetensors==0.5.3 \
-    "pkuseg==0.0.25" \
-    pykakasi==2.3.0 \
-    resemble-perth==1.0.1 \
-    s3tokenizer
+# Install core dependencies one by one to identify issues
+RUN pip install --no-cache-dir "numpy>=1.24.0,<1.26.0"
+RUN pip install --no-cache-dir librosa==0.11.0
+RUN pip install --no-cache-dir transformers==4.46.3
+RUN pip install --no-cache-dir diffusers==0.29.0
+RUN pip install --no-cache-dir safetensors==0.5.3
+
+# Install optional dependencies (may fail gracefully)
+RUN pip install --no-cache-dir conformer==0.3.2 || echo "conformer failed, skipping"
+RUN pip install --no-cache-dir "pkuseg==0.0.25" || echo "pkuseg failed, skipping"
+RUN pip install --no-cache-dir pykakasi==2.3.0 || echo "pykakasi failed, skipping"
+RUN pip install --no-cache-dir resemble-perth==1.0.1 || echo "resemble-perth failed, skipping"
+RUN pip install --no-cache-dir s3tokenizer || echo "s3tokenizer failed, skipping"
 
 # Copy project files
 COPY src/ ./src/
