@@ -1,6 +1,6 @@
 # RunPod GPU Serverless Dockerfile for Chatterbox TTS API
-# Using newer PyTorch base image compatible with transformers 4.46.3
-FROM pytorch/pytorch:2.4.0-devel-cuda12.1-cudnn8-ubuntu22.04
+# Using official PyTorch image compatible with transformers 4.46.3
+FROM pytorch/pytorch:2.1.2-cuda12.1-cudnn8-runtime
 
 # Set working directory
 WORKDIR /app
