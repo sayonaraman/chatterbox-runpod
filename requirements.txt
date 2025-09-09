@@ -1,11 +1,10 @@
-# Core Chatterbox TTS dependencies (from official pyproject.toml)
+# Core Chatterbox TTS dependencies (adapted for RunPod PyTorch 2.1.0)
 numpy>=1.24.0,<1.26.0
 librosa==0.11.0
 s3tokenizer
-torch==2.6.0
-torchaudio==2.6.0
-transformers==4.46.3
-diffusers==0.29.0
+# torch==2.1.0 and torchaudio==2.1.0 already in base image
+transformers==4.36.2
+diffusers==0.25.1
 resemble-perth==1.0.1
 conformer==0.3.2
 safetensors==0.5.3
